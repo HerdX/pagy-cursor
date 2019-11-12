@@ -33,8 +33,12 @@ class Pagy
     end
 
     def pagy_uuid_cursor_has_more?(collection, pagy)
+    begin
       next_position = collection.last[pagy.primary_key]
       pagy_uuid_cursor_get_items(collection, pagy, next_position).exists?
+    rescue
+      false
     end
+  end
   end
 end
