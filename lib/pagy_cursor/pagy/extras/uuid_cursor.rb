@@ -1,25 +1,27 @@
 require 'pagy_cursor/pagy/cursor'
 class Pagy
 
-  module Backend ; private         # the whole module is private so no problem with including it in a controller
+  module Backend
+    ; private # the whole module is private so no problem with including it in a controller
 
     # Return Pagy object and items
-    def pagy_uuid_cursor(collection, vars={})
+    def pagy_uuid_cursor(collection, vars = {})
       pagy = Pagy::Cursor.new(pagy_uuid_cursor_get_vars(collection, vars))
-      items =  pagy_uuid_cursor_get_items(collection, pagy, pagy.position)
-      pagy.has_more =  pagy_uuid_cursor_has_more?(items, pagy)
+      items = pagy_uuid_cursor_get_items(collection, pagy, pagy.position)
+      pagy.has_more = pagy_uuid_cursor_has_more?(items, pagy)
 
       return pagy, items
     end
 
     def pagy_uuid_cursor_get_vars(collection, vars)
       vars[:arel_table] = collection.arel_table
-      vars[:primary_key] = collection.primary_key
+      vars[:primary_key] = vars[:primary_key] || collection.primary_key
+      vars[:sort] = vars[:sort]
       vars[:backend] = 'uuid'
       vars
     end
 
-    def pagy_uuid_cursor_get_items(collection, pagy, position=nil)
+    def pagy_uuid_cursor_get_items(collection, pagy, position = nil)
       if position.present?
         arel_table = pagy.arel_table
 
@@ -40,4 +42,5 @@ class Pagy
         false
       end
     end
+  end
 end
